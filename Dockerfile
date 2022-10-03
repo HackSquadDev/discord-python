@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN pip install .
 
 CMD ["python", "hacksquad_discordpy/main.py"]
