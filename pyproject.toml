@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "hacksquad-discordpy"
+name = "hacksquad-bot"
 version = "0.1.0"
 description = ""
 authors = ["Arpan Pandey <arpanpandey.aps@gmail.com>"]
