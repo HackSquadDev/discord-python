@@ -11,8 +11,8 @@ async def team_wrapper(slug: str):
                 data = data['team']
                 users = []
                 for user in data['users']:
-                    users.append(User(user.get('id'), user.get('name'), user.get('email'), user.get('emailVerified'), user.get('image'), user.get(
-                        'moderator'), user.get('handle'), user.get('teamId'), user.get('disqualified'), user.get('github_user_id')))
+                    users.append(vars(User(user.get('id'), user.get('name'), user.get('email'), user.get('emailVerified'), user.get('image'), user.get(
+                        'moderator'), user.get('handle'), user.get('teamId'), user.get('disqualified'), user.get('github_user_id'))))
 
                 return Team(data.get('id'), data.get('name'), data.get('slug'), data.get('score'), data.get('owner_id'), data.get('prs'), data.get('github_team_id'), data.get('allow_auto_assign'), data.get('disqualified'), users)
             elif resp.status == 500:

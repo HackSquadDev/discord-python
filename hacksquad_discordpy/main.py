@@ -1,9 +1,12 @@
+import os
+
 import discord
 from discord.ext import commands
-import os
 from dotenv import load_dotenv
-from wrappers.team import team_wrapper
+
 from wrappers.leaderboard import leaderboard_wrapper
+from wrappers.team import team_wrapper
+
 load_dotenv()
 
 intents = discord.Intents.all()

@@ -1,5 +1,7 @@
 from typing import List
+
 from objects.User import User
+
 
 class Team:
     id: str
@@ -27,6 +29,6 @@ class Team:
 
     def __repr__(self) -> str:
         return f'{self.name} - {self.slug}'
-    
+
     def __str__(self) -> str:
         return self.__repr__()
