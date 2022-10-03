@@ -9,9 +9,8 @@ from wrappers.team import team_wrapper
 try:
     from dotenv import load_dotenv
     load_dotenv()
-    print("Working in dev!")
 except ImportError:
-    print("Working in production!")
+    pass
 
 intents = discord.Intents.all()
 my_secret = os.environ["TOKEN"]  # Bot Token
