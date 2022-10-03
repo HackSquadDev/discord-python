@@ -6,4 +6,4 @@ COPY . .
 
 RUN pip install .
 
-CMD ["python", "hacksquad_discordpy/main.py"]
+CMD ["python", "bot.py"]
