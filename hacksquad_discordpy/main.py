@@ -28,7 +28,6 @@ async def help(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def sync(ctx):
-    await ctx.send("Syncing the bot...")
     await bot.tree.sync()
     await ctx.send("Synced")
 
