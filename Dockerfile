@@ -1,9 +1,8 @@
 FROM python:3
 
-WORKDIR /app
+WORKDIR /app/hacksquad_bot
+RUN pip install --no-cache-dir .
 
-COPY . .
-
-RUN pip install .
+COPY . ./
 
 CMD ["python", "bot.py"]
