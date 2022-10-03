@@ -31,6 +31,10 @@ async def sync(ctx):
     await bot.tree.sync()
     await ctx.send("Synced")
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def purge(ctx, amount=5):
+    await ctx.channel.purge(limit=amount)
 
 bot.run(my_secret)
 
