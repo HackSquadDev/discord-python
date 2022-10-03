@@ -2,12 +2,15 @@ import os
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from wrappers.leaderboard import leaderboard_wrapper
 from wrappers.team import team_wrapper
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 intents = discord.Intents.all()
 my_secret = os.environ["TOKEN"]  # Bot Token
@@ -23,6 +26,7 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send("Pong!")
 
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def sync(ctx):
@@ -31,4 +35,3 @@ async def sync(ctx):
 
 
 bot.run(my_secret)
-
