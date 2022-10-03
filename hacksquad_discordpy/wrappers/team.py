@@ -3,7 +3,7 @@ from objects.Team import Team
 from objects.User import User
 
 
-async def team(slug: str):
+async def team_wrapper(slug: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://www.hacksquad.dev/api/team?id={slug.strip()}') as resp:
             if resp.status == 200:
