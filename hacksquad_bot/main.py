@@ -17,7 +17,7 @@ EXTENSIONS = (
 class HackSquadBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=os.environ['PREFIX'],
+            command_prefix=os.environ['PREFIX'] or "!",
             description=DESCRIPTION,
             intents=discord.Intents.all()
         )
