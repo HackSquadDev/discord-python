@@ -1,3 +1,6 @@
+from typing import Optional
+
+from discord import Guild
 from discord.ext import commands
 
 from hacksquad_bot.main import Context, HackSquadBot
@@ -20,10 +23,10 @@ class InternalCommands(commands.Cog):
         await ctx.send(f"Succesfully reloaded `{cog_name}`.")
 
     @commands.command(name="sync")
-    async def cmd_sync(self, ctx: Context):
-        msg = await ctx.send("Syncing slash commands...")
-        await self.bot.tree.sync()
-        await msg.edit(content="Successfully synced slash!")
+    async def cmd_sync(self, ctx: Context, *, guild: Optional[Guild]):
+        msg = await ctx.send(f"Syncing slash commands for guild {guild.name}..." if guild else "Syncing slash commands... Please wait, this might take a while...")
+        await self.bot.tree.sync(guild=guild)
+        await msg.edit(content=f"Successfully synced slash for guild {guild.name}" if guild else "Successfully synced slash!")
 
 async def setup(bot: HackSquadBot):
     cog = InternalCommands(bot)

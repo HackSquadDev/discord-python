@@ -28,6 +28,12 @@ class HackSquadBot(commands.AutoShardedBot):
                 await self.load_extension(f"hacksquad_bot.{extension}")
             except Exception:
                 logging.exception("Could not load \"%s\" due to an error", extension)
+        await self.tree.sync()
+
+    async def on_command_error(self, context: commands.Context["HackSquadBot"], exception: commands.errors.CommandError, /):
+        if isinstance(exception, commands.errors.CommandNotFound):
+            return
+        return await super().on_command_error(context, exception)
 
 Context = commands.Context[HackSquadBot]
 
