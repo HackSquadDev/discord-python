@@ -194,7 +194,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 name = "python-dotenv"
 version = "0.21.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -224,7 +224,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d52e6a58cc7c9ee53f5de257efa96444b08f7cfdd841d10d13e6ddb90d81418c"
+content-hash = "010459c459ba3319a3e648e5980636f2e34313b6dc5d2bd55a7d0609cebdc99d"
 
 [metadata.files]
 aiohttp = []

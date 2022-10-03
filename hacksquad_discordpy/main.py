@@ -2,12 +2,16 @@ import os
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 
 from wrappers.leaderboard import leaderboard_wrapper
 from wrappers.team import team_wrapper
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("Working in dev!")
+except ImportError:
+    print("Working in production!")
 
 intents = discord.Intents.all()
 my_secret = os.environ["TOKEN"]  # Bot Token
@@ -15,6 +19,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 activity = discord.Activity(type=discord.ActivityType.listening, name="!help")
 
 bot.remove_command("help")
+
 
 @bot.event
 async def on_ready():
@@ -25,6 +30,7 @@ async def on_ready():
 async def help(ctx):
     await ctx.send("Help")
 
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def sync(ctx):
@@ -33,4 +39,3 @@ async def sync(ctx):
 
 
 bot.run(my_secret)
-
