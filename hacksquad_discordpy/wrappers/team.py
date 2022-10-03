@@ -1,11 +1,11 @@
 import aiohttp
 from objects.Team import Team
 from objects.User import User
-from wrappers.api_thingies import hacksquad_endpoint
+from wrappers.constants import HACKSQUAD_ENDPOINT
 
 async def team_wrapper(slug: str) -> Team:
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'{hacksquad_endpoint}team?id={slug.strip()}') as resp:
+        async with session.get(f'{HACKSQUAD_ENDPOINT}/team?id={slug.strip()}') as resp:
             if resp.status == 200:
                 data = await resp.json()
                 data = data['team']

@@ -1,1 +1,0 @@
-hacksquad_endpoint = 'https://www.hacksquad.dev/api/'

@@ -1,0 +1,1 @@
+HACKSQUAD_ENDPOINT = 'https://www.hacksquad.dev/api'
