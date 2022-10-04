@@ -1,13 +1,12 @@
 import aiohttp
 import asyncio
-import json
+
 
 async def get_leaderboard():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://www.hacksquad.dev/api/leaderboard') as response:
             if response.status == 200:
-                response = await response.text()
-                response = json.loads(response)
+                response = await response.json()
                 teams = response.get("teams")
                 return teams
 
@@ -18,8 +17,7 @@ async def get_team(slug):
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://www.hacksquad.dev/api/team/?id={slug}') as response:
             if response.status == 200:
-                response = await response.text()
-                response = json.loads(response)
+                response = await response.json()
                 team = response.get("team")
                 return team
 
@@ -30,8 +28,7 @@ async def get_contributors():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://contributors.novu.co/contributors') as response:
             if response.status == 200:
-                response = await response.text()
-                response = json.loads(response)
+                response = await response.json()
                 contributors = response.get("list")
                 return contributors
 
@@ -43,8 +40,7 @@ async def get_contributors_mini():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://contributors.novu.co/contributors-mini') as response:
             if response.status == 200:
-                response = await response.text()
-                response = json.loads(response)
+                response = await response.json()
                 contributors = response.get("list")
                 return contributors
 
