@@ -1,39 +1,36 @@
 import aiohttp
 import asyncio
 
+class ResponseError (Exception):
+    """Something went wrong with the response"""
+    pass
 
 async def get_leaderboard():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://www.hacksquad.dev/api/leaderboard') as response:
             if response.status == 200:
                 response = await response.json()
-                teams = response.get("teams")
-                return teams
-
+                return response.get("teams")
             else:
-                return None
+                raise ResponseError
 
 async def get_team(slug):
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://www.hacksquad.dev/api/team/?id={slug}') as response:
             if response.status == 200:
                 response = await response.json()
-                team = response.get("team")
-                return team
-
+                return response.get("team")
             else:
-                return None
+                raise ResponseError
 
 async def get_contributors():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://contributors.novu.co/contributors') as response:
             if response.status == 200:
                 response = await response.json()
-                contributors = response.get("list")
-                return contributors
-
+                return response.get("list")
             else:
-                return None
+                raise ResponseError
 
 async def get_contributors_mini():
     # I do not think that we would get much of a performance benefit from this but leaving it here all the same
@@ -41,8 +38,6 @@ async def get_contributors_mini():
         async with session.get('https://contributors.novu.co/contributors-mini') as response:
             if response.status == 200:
                 response = await response.json()
-                contributors = response.get("list")
-                return contributors
-
+                return response.get("list")
             else:
-                return None
+                raise ResponseError
