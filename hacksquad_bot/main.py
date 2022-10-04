@@ -3,6 +3,7 @@ import os
 
 import discord
 from discord.ext import commands
+from jishaku.cog import Jishaku
 
 
 DESCRIPTION = """
@@ -28,6 +29,7 @@ class HackSquadBot(commands.AutoShardedBot):
                 await self.load_extension(f"hacksquad_bot.{extension}")
             except Exception:
                 logging.exception("Could not load \"%s\" due to an error", extension)
+        await self.add_cog(Jishaku(bot=self))
         await self.tree.sync()
 
     async def on_command_error(self, context: commands.Context["HackSquadBot"], exception: commands.errors.CommandError, /):
@@ -36,18 +38,3 @@ class HackSquadBot(commands.AutoShardedBot):
         return await super().on_command_error(context, exception)
 
 Context = commands.Context[HackSquadBot]
-
-# @bot.event
-# async def on_ready():
-#     await bot.load_extension("jishaku")
-#     print("Bot is running as {0.user}".format(bot))
-
-# @bot.hybrid_command()
-# async def ping(ctx):
-#     await ctx.send("Pong!")
-
-# @bot.command()
-# @commands.has_permissions(administrator=True)
-# async def sync(ctx):
-#     await bot.tree.sync()
-#     await ctx.send("Synced")
