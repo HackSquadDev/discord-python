@@ -18,9 +18,7 @@ class InternalCommands(commands.Cog):
         try:
             await self.bot.reload_extension(f"hacksquad_bot.cogs.{cog_name}")
         except Exception as e:
-            await ctx.send(
-                f"Could not reload cog due to an unexpected error:\n```py\n{e}```"
-            )
+            await ctx.send(f"Could not reload cog due to an unexpected error:\n```py\n{e}```")
             return
         await ctx.send(f"Succesfully reloaded `{cog_name}`.")
 
