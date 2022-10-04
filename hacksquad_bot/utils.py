@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 
-class ResponseError (Exception):
+class ResponseError(Exception):
     """Something went wrong with the response"""
     pass
 
