@@ -25,3 +25,29 @@ async def get_team(slug):
 
             else:
                 return None
+
+
+async def get_contributors():
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://contributors.novu.co/contributors') as response:
+            if response.status == 200:
+                response = await response.text()
+                response = json.loads(response)
+                contributors = response.get("list")
+                return contributors
+
+            else:
+                return None
+
+async def get_contributors_mini():
+    # I do not think that we would get much of a performance benefit from this but leaving it here all the same
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://contributors.novu.co/contributors-mini') as response:
+            if response.status == 200:
+                response = await response.text()
+                response = json.loads(response)
+                contributors = response.get("list")
+                return contributors
+
+            else:
+                return None
