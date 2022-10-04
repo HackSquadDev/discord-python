@@ -1,6 +1,8 @@
 import aiohttp
 import asyncio
 import json
+from discord import Interaction, Embed
+from discord.ext.paginator import paginator
 
 async def get_leaderboard():
     async with aiohttp.ClientSession() as session:
@@ -50,3 +52,17 @@ async def get_contributors_mini():
 
             else:
                 return None
+
+class MyPaginator(paginator.Paginator):
+    async def get_page_count(self, interaction: Interaction) -> int:
+        return len(self.client.guilds)
+    
+    async def get_page_content(self, interaction: Interaction, page: int):
+        guild = self.client.guilds[page]
+        return {
+            "embed": Embed(
+                title=guild.name,
+                description=f"This guild has {guild.member_count} members."
+            ),
+            "ephemeral": True
+        }
