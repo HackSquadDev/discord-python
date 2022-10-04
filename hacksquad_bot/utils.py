@@ -26,7 +26,6 @@ async def get_team(slug):
             else:
                 return None
 
-
 async def get_contributors():
     async with aiohttp.ClientSession() as session:
         async with session.get('https://contributors.novu.co/contributors') as response:
