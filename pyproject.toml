@@ -9,6 +9,7 @@ python = "^3.9"
 "discord.py" = "^2.0.1"
 jishaku = "^2.5.1"
 aiohttp = "^3.8.3"
+pydantic = {extras = ["dotenv"], version = "^1.10.2"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from hacksquad_bot.main import HackSquadBot, Context
+from hacksquad_bot.main import Context, HackSquadBot
 
 
 class HackSquad(commands.Cog):

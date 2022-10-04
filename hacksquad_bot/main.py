@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from jishaku.cog import Jishaku
 
+from hacksquad_bot.config import bot_config
 
 DESCRIPTION = """
 Hey there! I am the discord.py version of the HackSquad Bot! Nice to meeeeeeeet you!
@@ -18,10 +19,13 @@ EXTENSIONS = (
 class HackSquadBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=os.environ["PREFIX"] or "!",
+            command_prefix=bot_config.prefix or "!",
             description=DESCRIPTION,
             intents=discord.Intents.all(),
         )
+
+    def run_bot(self) -> None:
+        super().run(bot_config.token)
 
     async def setup_hook(self) -> None:
         for extension in EXTENSIONS:
