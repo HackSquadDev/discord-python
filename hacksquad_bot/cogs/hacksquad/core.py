@@ -4,7 +4,6 @@ from hacksquad_bot.main import HackSquadBot, Context
 
 
 class HackSquad(commands.Cog):
-    
     def __init__(self, bot: HackSquadBot) -> None:
         self.bot = bot
 
