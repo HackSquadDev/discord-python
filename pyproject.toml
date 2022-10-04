@@ -2,7 +2,8 @@
 name = "hacksquad-bot"
 version = "0.1.0"
 description = ""
-authors = ["Arpan Pandey <arpanpandey.aps@gmail.com>"]
+authors = ["HellFire <hellfire@example.com>", "sravan <sravan@example.com>", "Julien Mauroy <pro.julien.mauroy@gmail.com>"]
+maintainers = ["HellFire <hellfire@example.com>", "sravan <sravan@example.com>", "Julien Mauroy <pro.julien.mauroy@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
