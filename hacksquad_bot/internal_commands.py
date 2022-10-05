@@ -24,9 +24,18 @@ class InternalCommands(commands.Cog):
 
     @commands.command(name="sync")
     async def cmd_sync(self, ctx: Context, *, guild: Optional[Guild]):
-        msg = await ctx.send(f"Syncing slash commands for guild {guild.name}..." if guild else "Syncing slash commands... Please wait, this might take a while...")
+        msg = await ctx.send(
+            f"Syncing slash commands for guild {guild.name}..."
+            if guild
+            else "Syncing slash commands... Please wait, this might take a while..."
+        )
         await self.bot.tree.sync(guild=guild)
-        await msg.edit(content=f"Successfully synced slash for guild {guild.name}" if guild else "Successfully synced slash!")
+        await msg.edit(
+            content=f"Successfully synced slash for guild {guild.name}"
+            if guild
+            else "Successfully synced slash!"
+        )
+
 
 async def setup(bot: HackSquadBot):
     cog = InternalCommands(bot)
