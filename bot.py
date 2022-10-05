@@ -1,5 +1,6 @@
 import contextlib
 import os
+
 from hacksquad_bot.main import HackSquadBot
 
 with contextlib.suppress(ImportError):
