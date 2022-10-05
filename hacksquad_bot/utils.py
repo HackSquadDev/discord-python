@@ -88,6 +88,9 @@ class Team(PartialTeam):
     "If the team has been disqualified during the event"
 
 leaderboard: Dict[PartialTeam, datetime] = {}
+team: Dict[Team, datetime] = {}
+contributors: Dict[List[str], datetime] = {}
+contributors_mini: Dict[List[str], datetime] = {}
 
 async def gen_leaderboard_cache():
     now = datetime.now()
@@ -97,7 +100,7 @@ async def gen_leaderboard_cache():
 
 async def update_leaderboard_cache():
     if leaderboard:
-        if datetime.datetime.now() - leaderboard[1] > datetime.timedelta(hours=1):
+        if datetime.datetime.now() - leaderboard[1] > datetime.timedelta(minutes=30):
             await gen_leaderboard_cache()
     else:
         await gen_leaderboard_cache()
@@ -119,7 +122,20 @@ async def get_leaderboard() -> List[PartialTeam]:
     await update_leaderboard_cache()
     return leaderboard[0]
 
-async def get_team(slug: str) -> Team:
+async def gen_team_cache(slug: str):
+    now = datetime.now()
+    t = await fetch_team(slug)
+    global team
+    team = [t, now]
+
+async def update_team_cache(slug: str):
+    if slug in team:
+        if datetime.datetime.now() - team[slug][1] > datetime.timedelta(minutes=30):
+            await gen_team_cache(slug)
+    else:
+        await gen_team_cache(slug)
+
+async def fetch_team(slug: str) -> Team:
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f"https://www.hacksquad.dev/api/team/?id={slug}"
@@ -168,8 +184,24 @@ async def get_team(slug: str) -> Team:
         disqualified=info["disqualified"],
     )
 
+async def get_team(slug: str) -> Team:
+    await update_team_cache(slug)
+    return team[slug][0]
 
-async def get_contributors():
+async def gen_contributors_cache():
+    now = datetime.now()
+    contrib = await fetch_contributors()
+    global contributors
+    contributors = [contrib, now]
+
+async def update_contributors_cache():
+    if contributors:
+        if datetime.datetime.now() - contributors[1] > datetime.timedelta(minutes=30):
+            await gen_contributors_cache()
+    else:
+        await gen_contributors_cache()
+
+async def fetch_contributors():
     async with aiohttp.ClientSession() as session:
         async with session.get("https://contributors.novu.co/contributors") as response:
             if response.status != 200:
@@ -177,8 +209,24 @@ async def get_contributors():
             response = await response.json()
     return response["list"]
 
+async def get_contributors():
+    await update_contributors_cache()
+    return contributors[0]
 
-async def get_contributors_mini():
+async def gen_contributors_mini_cache():
+    now = datetime.now()
+    contrib = await fetch_contributors_mini()
+    global contributors_mini
+    contributors_mini = [contrib, now]
+
+async def update_contributors_mini_cache():
+    if contributors_mini:
+        if datetime.datetime.now() - contributors_mini[1] > datetime.timedelta(minutes=30):
+            await gen_contributors_mini_cache()
+    else:
+        await gen_contributors_mini_cache() 
+
+async def fetch_contributors_mini():
     # I do not think that we would get much of a performance benefit from this but leaving it here all the same
     async with aiohttp.ClientSession() as session:
         async with session.get(
@@ -189,3 +237,6 @@ async def get_contributors_mini():
             response = await response.json()
     return response["list"]
 
+async def get_contributors_mini():
+    await update_contributors_mini_cache()
+    return contributors_mini[0]
