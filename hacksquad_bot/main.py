@@ -4,7 +4,6 @@ import os
 import discord
 from discord.ext import commands
 
-
 DESCRIPTION = """
 Hey there! I am the discord.py version of the HackSquad Bot! Nice to meeeeeeeet you!
 """
@@ -17,7 +16,7 @@ EXTENSIONS = (
 class HackSquadBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=os.environ["PREFIX"] or "!",
+            command_prefix=os.environ.get("PREFIX") or "!",
             description=DESCRIPTION,
             intents=discord.Intents.all(),
         )

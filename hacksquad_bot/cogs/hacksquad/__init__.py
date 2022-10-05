@@ -1,5 +1,6 @@
-from .core import HackSquad
 from hacksquad_bot.main import HackSquadBot
+
+from .core import HackSquad
 
 
 async def setup(bot: HackSquadBot):
