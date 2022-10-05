@@ -3,7 +3,6 @@ import os
 
 import discord
 from discord.ext import commands
-from jishaku.cog import Jishaku
 
 
 DESCRIPTION = """
@@ -29,17 +28,23 @@ class HackSquadBot(commands.AutoShardedBot):
                 await self.load_extension(f"hacksquad_bot.{extension}")
             except Exception:
                 logging.exception('Could not load "%s" due to an error', extension)
-        await self.add_cog(Jishaku(bot=self))
-        await self.tree.sync()
+        await self.load_extension("jishaku")
+        # await self.tree.sync()
 
-    async def on_command_error(
+    async def on_command_error(  # type: ignore
         self,
         context: commands.Context["HackSquadBot"],
         exception: commands.errors.CommandError,
         /,
     ):
+        if isinstance(exception, commands.UserInputError):
+            await context.send_help(context.command)
+            return
         if isinstance(exception, commands.errors.CommandNotFound):
             return
+        await context.send(
+            f"`Unexpected error in command {context.command}`\n```py\n{exception}```"
+        )
         return await super().on_command_error(context, exception)
 
 
