@@ -172,3 +172,4 @@ async def get_contributors_mini():
                 raise ResponseError()
             response = await response.json()
     return response["list"]
+
