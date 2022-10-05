@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List, Optional, TypedDict
+from typing import Any, List, Optional, TypedDict, Dict
 import aiohttp
 
 
@@ -7,7 +7,6 @@ class ResponseError(Exception):
     """Something went wrong with the response"""
 
     pass
-
 
 class User(TypedDict):
     id: str
@@ -88,8 +87,22 @@ class Team(PartialTeam):
     disqualified: bool
     "If the team has been disqualified during the event"
 
+leaderboard: Dict[PartialTeam, datetime] = {}
 
-async def get_leaderboard() -> List[PartialTeam]:
+async def gen_leaderboard_cache():
+    now = datetime.now()
+    lb = await fetch_leaderboard()
+    global leaderboard
+    leaderboard = [lb, now]
+
+async def update_leaderboard_cache():
+    if leaderboard:
+        if datetime.datetime.now() - leaderboard[1] > datetime.timedelta(hours=1):
+            await gen_leaderboard_cache()
+    else:
+        await gen_leaderboard_cache()
+
+async def fetch_leaderboard() -> List[PartialTeam]:
     async with aiohttp.ClientSession() as session:
         async with session.get("https://www.hacksquad.dev/api/leaderboard") as response:
             if response.status != 200:
@@ -102,6 +115,9 @@ async def get_leaderboard() -> List[PartialTeam]:
         for info in response["teams"]
     ]
 
+async def get_leaderboard() -> List[PartialTeam]:
+    await update_leaderboard_cache()
+    return leaderboard[0]
 
 async def get_team(slug: str) -> Team:
     async with aiohttp.ClientSession() as session:
