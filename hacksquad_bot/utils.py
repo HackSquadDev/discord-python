@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, List, Optional, TypedDict
+
 import aiohttp
 
 
@@ -96,18 +97,14 @@ async def get_leaderboard() -> List[PartialTeam]:
                 raise ResponseError()
             response = await response.json()
     return [
-        PartialTeam(
-            id=info["id"], name=info["name"], score=info["score"], slug=info["slug"]
-        )
+        PartialTeam(id=info["id"], name=info["name"], score=info["score"], slug=info["slug"])
         for info in response["teams"]
     ]
 
 
 async def get_team(slug: str) -> Team:
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            f"https://www.hacksquad.dev/api/team/?id={slug}"
-        ) as response:
+        async with session.get(f"https://www.hacksquad.dev/api/team/?id={slug}") as response:
             if response.status != 200:
                 raise ResponseError()
             response = await response.json()
@@ -165,11 +162,8 @@ async def get_contributors():
 async def get_contributors_mini():
     # I do not think that we would get much of a performance benefit from this but leaving it here all the same
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-            "https://contributors.novu.co/contributors-mini"
-        ) as response:
+        async with session.get("https://contributors.novu.co/contributors-mini") as response:
             if response.status != 200:
                 raise ResponseError()
             response = await response.json()
     return response["list"]
-
