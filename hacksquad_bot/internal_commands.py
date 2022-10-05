@@ -29,9 +29,7 @@ class InternalCommands(commands.Cog):
             await ctx.send("Cannot find extension.")
             return
         except Exception as e:
-            await ctx.send(
-                f"Could not load cog due to an unexpected error:\n```py\n{e}```"
-            )
+            await ctx.send(f"Could not load cog due to an unexpected error:\n```py\n{e}```")
             return
         await ctx.send(f"Succesfully loaded `{cog_name}`.")
 
@@ -54,9 +52,7 @@ class InternalCommands(commands.Cog):
             await ctx.send("Cannot find extension.")
             return
         except Exception as e:
-            await ctx.send(
-                f"Could not reload cog due to an unexpected error:\n```py\n{e}```"
-            )
+            await ctx.send(f"Could not reload cog due to an unexpected error:\n```py\n{e}```")
             return
         await ctx.send(f"Succesfully reloaded `{cog_name}`.")
 
@@ -74,9 +70,7 @@ class InternalCommands(commands.Cog):
             await ctx.send("Cannot find extension.")
             return
         except Exception as e:
-            await ctx.send(
-                f"Could not unload cog due to an unexpected error:\n```py\n{e}```"
-            )
+            await ctx.send(f"Could not unload cog due to an unexpected error:\n```py\n{e}```")
             return
         await ctx.send(f"Succesfully unloaded `{cog_name}`.")
 
