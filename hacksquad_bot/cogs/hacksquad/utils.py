@@ -1,6 +1,9 @@
-from datetime import datetime
-from typing import Any, List, Optional, TypedDict, Dict
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, TypedDict
+
 import aiohttp
+
+from hacksquad_bot.utils.objects import Singleton
 
 
 class ResponseError(Exception):
@@ -89,166 +92,102 @@ class Team(PartialTeam):
     "If the team has been disqualified during the event"
 
 
-leaderboard: Dict[PartialTeam, datetime] = {}
-team: Dict[Team, datetime] = {}
-contributors: Dict[List[str], datetime] = {}
-contributors_mini: Dict[List[str], datetime] = {}
+class RequesterCachedAttribute(TypedDict):
+    cached_at: datetime
+    data: Any
 
 
-async def gen_leaderboard_cache():
-    now = datetime.now()
-    lb = await fetch_leaderboard()
-    global leaderboard
-    leaderboard = [lb, now]
+class Requester(Singleton):
+    _cache: Dict[str, RequesterCachedAttribute] = {}
 
+    async def _make_request(self, url: str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status != 200:
+                    raise ResponseError()
+                return await response.json()
 
-async def update_leaderboard_cache():
-    if leaderboard:
-        if datetime.datetime.now() - leaderboard[1] > datetime.timedelta(minutes=30):
-            await gen_leaderboard_cache()
-    else:
-        await gen_leaderboard_cache()
+    def _allow_cache_use(self, entry_name: str) -> bool:
+        if not self._cache.get(entry_name):
+            return False
 
+        cached_at = self._cache[entry_name]["cached_at"]
+        invalid_at = cached_at + timedelta(minutes=30)
 
-async def fetch_leaderboard() -> List[PartialTeam]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://www.hacksquad.dev/api/leaderboard") as response:
-            if response.status != 200:
-                raise ResponseError()
-            response = await response.json()
-    return [
-        PartialTeam(id=info["id"], name=info["name"], score=info["score"], slug=info["slug"])
-        for info in response["teams"]
-    ]
+        # Cached data is invalid if it's been there since 30 minutes
+        return invalid_at >= datetime.now()
 
+    async def fetch_leaderboard(self) -> List[PartialTeam]:
+        if self._allow_cache_use("leaderboard"):
+            return self._cache["leaderboard"]["data"]
 
-async def get_leaderboard() -> List[PartialTeam]:
-    await update_leaderboard_cache()
-    return leaderboard[0]
+        result = await self._make_request("https://www.hacksquad.dev/api/leaderboard")
 
+        final_result = [
+            PartialTeam(id=info["id"], name=info["name"], score=info["score"], slug=info["slug"])
+            for info in result["teams"]
+        ]
+        self._cache["leaderboard"] = {"cached_at": datetime.now(), "data": final_result}
+        return final_result
 
-async def gen_team_cache(slug: str):
-    now = datetime.now()
-    t = await fetch_team(slug)
-    global team
-    team = [t, now]
+    async def fetch_team(self, slug: str) -> Team:
+        result = await self._make_request(f"https://www.hacksquad.dev/api/team/?id={slug}")
+        info = result["team"]
 
+        # Get owner as User object
+        owner = None
+        for user in info["users"]:
+            if user["id"] == info["ownerId"]:
+                owner = User(
+                    id=user["id"],
+                    name=user["name"],
+                    email=user["email"],
+                    email_verified=user["emailVerified"],
+                    image=user["image"],
+                    moderator=user["moderator"],
+                    handle=user["handle"],
+                    team_id=user["teamId"],
+                    disqualified=user["disqualified"],
+                    github_user_id=user["githubUserId"],
+                )
 
-async def update_team_cache(slug: str):
-    if slug in team:
-        if datetime.datetime.now() - team[slug][1] > datetime.timedelta(minutes=30):
-            await gen_team_cache(slug)
-    else:
-        await gen_team_cache(slug)
-
-
-async def fetch_team(slug: str) -> Team:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://www.hacksquad.dev/api/team/?id={slug}") as response:
-            if response.status != 200:
-                raise ResponseError()
-            response = await response.json()
-    info = response["team"]
-
-    owner = None
-    for user in info["users"]:
-        if user["id"] == info["ownerId"]:
-            owner = User(
-                id=user["id"],
-                name=user["name"],
-                email=user["email"],
-                email_verified=user["emailVerified"],
-                image=user["image"],
-                moderator=user["moderator"],
-                handle=user["handle"],
-                team_id=user["teamId"],
-                disqualified=user["disqualified"],
-                github_user_id=user["githubUserId"],
+        # Get all PRs as PR object
+        prs = [
+            PR(
+                id=pr["id"],
+                created_at=datetime.fromisoformat(pr["createdAt"]),
+                title=pr["title"],
+                url=pr["url"],
             )
+            for pr in info["prs"]
+        ]
 
-    prs = [
-        PR(
-            id=pr["id"],
-            created_at=datetime.fromisoformat(pr["createdAt"]),
-            title=pr["title"],
-            url=pr["url"],
+        return Team(
+            id=info["id"],
+            name=info["name"],
+            score=info["score"],
+            slug=info["slug"],
+            owner_id=info["ownerId"],
+            owner=owner,
+            prs=prs,
+            github_team_id=info["githubTeamId"],
+            allow_auto_assign=info["allowAutoAssign"],
+            disqualified=info["disqualified"],
         )
-        for pr in info["prs"]
-    ]
 
-    return Team(
-        id=info["id"],
-        name=info["name"],
-        score=info["score"],
-        slug=info["slug"],
-        owner_id=info["ownerId"],
-        owner=owner,
-        prs=prs,
-        github_team_id=info["githubTeamId"],
-        allow_auto_assign=info["allowAutoAssign"],
-        disqualified=info["disqualified"],
-    )
+    async def fetch_contributors(self):
+        if self._allow_cache_use("contributors"):
+            return self._cache["contributors"]["data"]
 
+        result = await self._make_request("https://contributors.novu.co/contributors")
+        self._cache["contributors"] = {"cached_at": datetime.now(), "data": result["list"]}
+        return result["list"]
 
-async def get_team(slug: str) -> Team:
-    await update_team_cache(slug)
-    return team[slug][0]
+    async def fetch_contributors_mini(self):
+        # I do not think that we would get much of a performance benefit from this but leaving it here all the same
+        if self._allow_cache_use("contributors_mini"):
+            return self._cache["contributors_mini"]["data"]
 
-
-async def gen_contributors_cache():
-    now = datetime.now()
-    contrib = await fetch_contributors()
-    global contributors
-    contributors = [contrib, now]
-
-
-async def update_contributors_cache():
-    if contributors:
-        if datetime.datetime.now() - contributors[1] > datetime.timedelta(minutes=30):
-            await gen_contributors_cache()
-    else:
-        await gen_contributors_cache()
-
-
-async def fetch_contributors():
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://contributors.novu.co/contributors") as response:
-            if response.status != 200:
-                raise ResponseError()
-            response = await response.json()
-    return response["list"]
-
-
-async def get_contributors():
-    await update_contributors_cache()
-    return contributors[0]
-
-
-async def gen_contributors_mini_cache():
-    now = datetime.now()
-    contrib = await fetch_contributors_mini()
-    global contributors_mini
-    contributors_mini = [contrib, now]
-
-
-async def update_contributors_mini_cache():
-    if contributors_mini:
-        if datetime.datetime.now() - contributors_mini[1] > datetime.timedelta(minutes=30):
-            await gen_contributors_mini_cache()
-    else:
-        await gen_contributors_mini_cache()
-
-
-async def fetch_contributors_mini():
-    # I do not think that we would get much of a performance benefit from this but leaving it here all the same
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://contributors.novu.co/contributors-mini") as response:
-            if response.status != 200:
-                raise ResponseError()
-            response = await response.json()
-    return response["list"]
-
-
-async def get_contributors_mini():
-    await update_contributors_mini_cache()
-    return contributors_mini[0]
+        result = await self._make_request("https://contributors.novu.co/contributors-mini")
+        self._cache["contributors"] = {"cached_at": datetime.now(), "data": result["list"]}
+        return result["list"]
