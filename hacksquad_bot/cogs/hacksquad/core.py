@@ -83,4 +83,4 @@ class HackSquad(commands.Cog):
         contributors = await Requester().fetch_contributors()
         contributor = random.choice(contributors)
 
-        await message.edit(content="", embed=self.hero_embed_formatter(contributor))
+        await message.edit(content=None, embed=self.hero_embed_formatter(contributor))
