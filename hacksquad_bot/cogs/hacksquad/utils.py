@@ -45,6 +45,9 @@ class User(TypedDict):
 
 
 class PartialTeam(TypedDict):
+    place: Optional[int]
+    "The place of the team in the leaderboard"
+
     id: str
     "The team's unique ID"
 
@@ -124,7 +127,13 @@ class Requester(Singleton):
         result = await self._make_request("https://www.hacksquad.dev/api/leaderboard")
 
         final_result = [
-            PartialTeam(id=info["id"], name=info["name"], score=info["score"], slug=info["slug"])
+            PartialTeam(
+                place=None,
+                id=info["id"],
+                name=info["name"],
+                score=info["score"],
+                slug=info["slug"],
+            )
             for info in result["teams"]
         ]
         self._cache["leaderboard"] = {"cached_at": datetime.now(), "data": final_result}
@@ -163,6 +172,7 @@ class Requester(Singleton):
         ]
 
         return Team(
+            place=None,
             id=info["id"],
             name=info["name"],
             score=info["score"],

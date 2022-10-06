@@ -1,6 +1,11 @@
-from discord.ext import commands
+from typing import List
+
+from discord.ext import commands, menus
 
 from hacksquad_bot.main import Context, HackSquadBot
+
+from .menu import PageLeaderboard
+from .utils import Requester
 
 
 class HackSquad(commands.Cog):
@@ -12,7 +17,15 @@ class HackSquad(commands.Cog):
         """
         Show the leaderboard of HackSquad 2022!
         """
-        await ctx.send("The leaderboard is a work-in-progress! Check back later!")
+        results = await Requester().fetch_leaderboard()
+        results.sort(key=lambda x: x["score"], reverse=True)
+
+        for place, result in enumerate(results):
+            result["place"] = place
+
+        m = menus.MenuPages(source=PageLeaderboard(results), delete_message_after=True)
+
+        await m.start(ctx)  # type: ignore
 
     @commands.hybrid_command()
     async def teams(self, ctx: Context):

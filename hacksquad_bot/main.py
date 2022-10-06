@@ -28,7 +28,6 @@ class HackSquadBot(commands.AutoShardedBot):
             except Exception:
                 logging.exception('Could not load "%s" due to an error', extension)
         await self.load_extension("jishaku")
-        # await self.tree.sync()
 
     async def on_command_error(  # type: ignore
         self,
