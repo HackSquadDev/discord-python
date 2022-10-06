@@ -79,7 +79,7 @@ class HackSquad(commands.Cog):
         """
         Show the details of heros who have contributed to Hacksquad 2022!
         """
-        message = await ctx.send("Proccessing request...")
+        message = await ctx.send("Getting a random hero... That one must be awesome")
         contributors = await Requester().fetch_contributors()
         contributor = random.choice(contributors)
 
