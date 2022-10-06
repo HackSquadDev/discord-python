@@ -1,5 +1,6 @@
 from discord.ext import commands
-
+import random
+from hacksquad_bot.cogs.hacksquad.utils import Requester
 from hacksquad_bot.main import Context, HackSquadBot
 
 
@@ -26,4 +27,20 @@ class HackSquad(commands.Cog):
         """
         Show the details of heros who have contributed to Hacksquad 2022!
         """
-        await ctx.send("The hero is a work-in-progress! Check back later!")
+        message = await ctx.send("Proccessing request...")
+        contributors = await Requester().fetch_contributors()
+        for contributor in contributors:
+            contributor = dict(contributor)
+            if contributor["github"] == hero:
+                await message.edit(content="", embed=Requester().hero_embed_formatter(contributor))
+
+    @commands.hybrid_command()
+    async def randomhero(self, ctx: Context):
+        """
+        Show the details of heros who have contributed to Hacksquad 2022!
+        """
+        message = await ctx.send("Proccessing request...")
+        contributors = await Requester().fetch_contributors()
+        contributor = random.choice(contributors)
+
+        await message.edit(content="", embed=Requester().hero_embed_formatter(contributor))

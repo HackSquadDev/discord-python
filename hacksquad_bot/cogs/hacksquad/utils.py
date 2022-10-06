@@ -1,3 +1,5 @@
+import discord
+
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, TypedDict
 
@@ -191,3 +193,31 @@ class Requester(Singleton):
         result = await self._make_request("https://contributors.novu.co/contributors-mini")
         self._cache["contributors"] = {"cached_at": datetime.now(), "data": result["list"]}
         return result["list"]
+
+    def hero_embed_formatter(self, contributor: dict):
+        name = contributor["name"]
+        bio = contributor["bio"]
+        location = contributor["location"]
+        github = contributor["github"]
+        github_followers = contributor["github_followers"]
+        _discord = contributor["discord"]
+        linkedin = contributor["linkedin"]
+        twitter = contributor["twitter"]
+        activities_count = contributor["activities_count"]
+        activities_score = contributor["activities_score"]
+        avatar_url = contributor["avatar_url"]
+
+        pulls = contributor["pulls"]
+        number_of_pulls = len(pulls)
+
+        orbit_level = contributor["orbit_level"]
+        orbit_url = contributor["orbit_url"]
+
+        embed = discord.Embed(
+            title=f"{name}",
+            description=f"**🖊️:** {bio}\n\n**📍:** {location}\n\n:orbit: **ORBIT LEVEL**: {orbit_level}, [**ORBIT URL**]({orbit_url})\n\n**SOCIALS:**\n:github: {github} | :discord: {_discord} | :linkedin: {linkedin} | :twitter: {twitter}\n\n**Activities count:** {activities_count}\t\t**Activities score:** {activities_score}\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{Requester().pr_formatter(pulls)}\n",
+            color=discord.Color.random(),
+        )
+        embed.set_thumbnail(url=avatar_url)
+
+        return embed
