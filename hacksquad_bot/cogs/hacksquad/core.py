@@ -1,5 +1,7 @@
-from discord.ext import commands
 import random
+
+from discord.ext import commands
+
 from hacksquad_bot.cogs.hacksquad.utils import Requester
 from hacksquad_bot.main import Context, HackSquadBot
 

@@ -1,9 +1,8 @@
-import discord
-
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, TypedDict
 
 import aiohttp
+import discord
 
 from hacksquad_bot.utils.objects import Singleton
 
