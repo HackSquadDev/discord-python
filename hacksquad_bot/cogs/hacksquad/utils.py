@@ -192,4 +192,3 @@ class Requester(Singleton):
         result = await self._make_request("https://contributors.novu.co/contributors-mini")
         self._cache["contributors"] = {"cached_at": datetime.now(), "data": result["list"]}
         return result["list"]
-

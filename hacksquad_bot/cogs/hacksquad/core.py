@@ -11,7 +11,8 @@ class HackSquad(commands.Cog):
     def __init__(self, bot: HackSquadBot) -> None:
         self.bot = bot
 
-    def pr_formatter(self, pr_data:list):
+    @staticmethod
+    def pr_formatter(self, pr_data: list):
         if len(pr_data) > 10:
             pr_data = pr_data[:10]
         prs = ""
@@ -20,6 +21,7 @@ class HackSquad(commands.Cog):
 
         return prs
 
+    @staticmethod
     def hero_embed_formatter(self, contributor: dict):
         name = contributor["name"]
         bio = contributor["bio"]
