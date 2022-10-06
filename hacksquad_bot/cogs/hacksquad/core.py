@@ -72,7 +72,7 @@ class HackSquad(commands.Cog):
         for contributor in contributors:
             contributor = dict(contributor)
             if contributor["github"] == hero:
-                await message.edit(content="", embed=self.hero_embed_formatter(contributor))
+                await message.edit(content=None, embed=self.hero_embed_formatter(contributor))
 
     @commands.hybrid_command()
     async def randomhero(self, ctx: Context):
