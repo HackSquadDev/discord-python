@@ -154,7 +154,7 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/Rapptz/discord-ext-menus"
-reference = "HEAD"
+reference = "8686b5d"
 resolved_reference = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"
 
 [[package]]
@@ -575,7 +575,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ba83d854957a66ed7191e0e675ce8db7ad6c46589cc1a000930f70b5d88aad95"
+content-hash = "c884a056241a2f05b4dfe3adcfee11602b57747294d31dc788b5ff1bd3134479"
 
 [metadata.files]
 aiohttp = [
