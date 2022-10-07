@@ -27,7 +27,6 @@ class HackSquad(commands.Cog):
         bio = contributor["bio"]
         location = contributor["location"]
         github = f"[{contributor['github']}](https://github.com/{contributor['github']})"
-        github_followers = contributor["github_followers"]
         _discord = contributor["discord"]
         linkedin = contributor["linkedin"]
         twitter = f"[{contributor['twitter']}](https://twitter.com/{contributor['twitter']})"
