@@ -12,7 +12,7 @@ class HackSquad(commands.Cog):
         self.bot = bot
 
     @staticmethod
-    def pr_formatter(self, pr_data: list):
+    def pr_formatter(pr_data: list):
         if len(pr_data) > 10:
             pr_data = pr_data[:10]
         prs = ""
@@ -22,15 +22,15 @@ class HackSquad(commands.Cog):
         return prs
 
     @staticmethod
-    def hero_embed_formatter(self, contributor: dict):
+    def hero_embed_formatter(contributor: dict):
         name = contributor["name"]
         bio = contributor["bio"]
         location = contributor["location"]
-        github = contributor["github"]
+        github = f"[{contributor['github']}](https://github.com/{contributor['github']})"
         github_followers = contributor["github_followers"]
         _discord = contributor["discord"]
         linkedin = contributor["linkedin"]
-        twitter = contributor["twitter"]
+        twitter = f"[{contributor['twitter']}](https://twitter.com/{contributor['twitter']})"
         activities_count = contributor["activities_count"]
         activities_score = contributor["activities_score"]
         avatar_url = contributor["avatar_url"]
@@ -43,7 +43,7 @@ class HackSquad(commands.Cog):
 
         embed = discord.Embed(
             title=f"{name}",
-            description=f"**🖊️:** {bio}\n\n**📍:** {location}\n\n<:orbit:1026881077769424916> **ORBIT LEVEL**: {orbit_level}, [**ORBIT URL**]({orbit_url})\n\n**SOCIALS:**\n<:github:1026874300956938300> {github} | <:discord:1026874585750196234> {_discord} | <:linkedin:1026874447648526437> {linkedin} | <:twitter:1027142573996920874> {twitter}\n\n**Activities count:** {activities_count}\t\t**Activities score:** {activities_score}\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{self.pr_formatter(pulls)}\n",
+            description=f"**🖊️:** {bio}\n\n**📍:** {location}\n\n<:orbit:1026881077769424916> **ORBIT LEVEL**: {orbit_level} | :link: [**ORBIT URL**]({orbit_url})\n\n**SOCIALS:**\n<:github:1026874300956938300> {github} | <:discord:1026874585750196234> {_discord} | <:linkedin:1026874447648526437> {linkedin} | <:twitter:1027142573996920874> {twitter}\n\n**Activities count:** {activities_count}\t\t**Activities score:** {activities_score}\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
             color=discord.Color.random(),
         )
         embed.set_thumbnail(url=avatar_url)
@@ -74,7 +74,9 @@ class HackSquad(commands.Cog):
         for contributor in contributors:
             contributor = dict(contributor)
             if contributor["github"] == hero:
-                await message.edit(content=None, embed=self.hero_embed_formatter(contributor))
+                await message.edit(
+                    content=None, embed=HackSquad(HackSquadBot).hero_embed_formatter(contributor)
+                )
 
     @commands.hybrid_command()
     async def randomhero(self, ctx: Context):
