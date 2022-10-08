@@ -187,7 +187,7 @@ class Requester(Singleton):
                 )
 
         # Convert the str list to a Python list & cleanup
-        info["prs"] = [x.strip() for x in ast.literal_eval(info["prs"])]
+        info["prs"] = ast.literal_eval(info["prs"])
 
         # Get all PRs as PR object
         prs = [
