@@ -24,25 +24,15 @@ class HackSquad(commands.Cog):
     @staticmethod
     def hero_embed_formatter(contributor: dict):
         name = contributor["name"]
-        bio = contributor["bio"]
-        location = contributor["location"]
         github = f"[{contributor['github']}](https://github.com/{contributor['github']})"
-        _discord = contributor["discord"]
-        linkedin = contributor["linkedin"]
-        twitter = f"[{contributor['twitter']}](https://twitter.com/{contributor['twitter']})"
-        activities_count = contributor["activities_count"]
-        activities_score = contributor["activities_score"]
         avatar_url = contributor["avatar_url"]
 
         pulls = contributor["pulls"]
         number_of_pulls = len(pulls)
 
-        orbit_level = contributor["orbit_level"]
-        orbit_url = contributor["orbit_url"]
-
         embed = discord.Embed(
             title=f"{name}",
-            description=f"**🖊️:** {bio}\n\n**📍:** {location}\n\n<:orbit:1026881077769424916> **ORBIT LEVEL**: {orbit_level} | :link: [**ORBIT URL**]({orbit_url})\n\n**SOCIALS:**\n<:github:1026874300956938300> {github} | <:discord:1026874585750196234> {_discord} | <:linkedin:1026874447648526437> {linkedin} | <:twitter:1027142573996920874> {twitter}\n\n**Activities count:** {activities_count}\t\t**Activities score:** {activities_score}\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
+            description=f"<:github:1026874300956938300> [{github}](https://github.com/{github})\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
             color=discord.Color.random(),
         )
         embed.set_thumbnail(url=avatar_url)
