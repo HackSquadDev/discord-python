@@ -5,14 +5,20 @@ from typing import Any, Dict, List, Optional, TypedDict
 
 import aiohttp
 from dateutil.parser import isoparse
+from discord import Color
 
 from hacksquad_bot.utils.objects import Singleton
+
+HACKSQUAD_COLOR = Color.from_rgb(255, 0, 149)
 
 
 class ResponseError(Exception):
     """Something went wrong with the response"""
 
-    pass
+    code: int
+
+    def __init__(self, status_code: int) -> None:
+        self.code = status_code
 
 
 class User(TypedDict):
@@ -120,7 +126,7 @@ class Requester(Singleton):
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
-                    raise ResponseError()
+                    raise ResponseError(response.status)
                 return await response.json()
 
     def _allow_cache_use(self, entry_name: str) -> bool:
