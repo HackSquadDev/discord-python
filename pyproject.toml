@@ -13,6 +13,7 @@ aiohttp = "^3.8.3"
 typing-extensions = "^4.3.0"
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d"}
 tabulate = "^0.8.10"
+python-dateutil = "^2.8.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
