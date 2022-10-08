@@ -48,7 +48,7 @@ class HackSquad(commands.Cog):
         accepted = [pr for pr in results["prs"] if pr["status"] == PRStatus.ACCEPTED]
         deleted = [pr for pr in results["prs"] if pr["status"] == PRStatus.DELETED]
 
-        embed.description = f"The team `{results['name']}` has realized a total of `{len(total_prs)}` pull requests, which `{len(accepted)}` are accepted and `{len(deleted)}` are deleted from the competition."
+        embed.description = f"The team `{results['name']}` has realized a total of `{len(total_prs)}` pull requests, which `{len(accepted)}` are accepted and `{len(deleted)}` are deleted from the competition. (Deletion ratio: `{round(len(total_prs) / len(deleted), 1)}%`)"
 
         last_3_prs = [pr for pr in total_prs[-3:] if pr["status"] == PRStatus.ACCEPTED]
 
