@@ -7,10 +7,12 @@ maintainers = ["HellFire <hellfire@example.com>", "sravan <sravan@example.com>",
 
 [tool.poetry.dependencies]
 python = "^3.9"
-"discord.py" = "^2.0.1"
 jishaku = "^2.5.1"
 aiohttp = "^3.8.3"
 typing-extensions = "^4.3.0"
+tabulate = "^0.8.10"
+python-dateutil = "^2.8.2"
+discord-py = {git = "https://github.com/ForksOfPred/discord.py", rev = "feat-has-app-error-handler"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

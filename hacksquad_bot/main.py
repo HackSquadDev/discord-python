@@ -28,7 +28,6 @@ class HackSquadBot(commands.AutoShardedBot):
             except Exception:
                 logging.exception('Could not load "%s" due to an error', extension)
         await self.load_extension("jishaku")
-        # await self.tree.sync()
 
     async def on_command_error(  # type: ignore
         self,
@@ -41,10 +40,25 @@ class HackSquadBot(commands.AutoShardedBot):
             return
         if isinstance(exception, commands.errors.CommandNotFound):
             return
-        await context.send(
-            f"`Unexpected error in command {context.command}`\n```py\n{exception}```"
-        )
-        return await super().on_command_error(context, exception)
+
+        if self.extra_events.get("on_command_error", None):
+            return
+
+        # Basically https://github.com/Rapptz/discord.py/pull/8991
+        if context.cog:
+            if context.interaction and context.cog.has_app_error_handler():
+                return
+            if not context.interaction and context.cog.has_error_handler():
+                return
+
+        if context.interaction:
+            await context.interaction.response.send_message(
+                f"`Unexpected error in command {context.command}`\n```py\n{exception}```"
+            )
+        else:
+            await context.send(
+                f"`Unexpected error in command {context.command}`\n```py\n{exception}```"
+            )
 
 
 Context = commands.Context[HackSquadBot]
