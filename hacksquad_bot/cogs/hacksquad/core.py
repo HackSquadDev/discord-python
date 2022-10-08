@@ -13,8 +13,8 @@ class HackSquad(commands.Cog):
 
     @staticmethod
     def pr_formatter(pr_data: list):
-        if len(pr_data) > 10:
-            pr_data = pr_data[:10]
+        if len(pr_data) > 3:
+            pr_data = pr_data[:3]
         prs = ""
         for pr in pr_data:
             prs += f"[**{pr['title']}**]({pr['url']})\n"
@@ -32,7 +32,7 @@ class HackSquad(commands.Cog):
 
         embed = discord.Embed(
             title=f"{name}",
-            description=f"<:github:1026874300956938300> [{github}](https://github.com/{github})\n\n**Number of PRs:** {number_of_pulls}\n**Last 10 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
+            description=f"<:github:1026874300956938300> [{github}](https://github.com/{github})\n\n**Number of PRs:** {number_of_pulls}\n**Last 3 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
             color=discord.Color.random(),
         )
         embed.set_thumbnail(url=avatar_url)
