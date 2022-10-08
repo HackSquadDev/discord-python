@@ -32,7 +32,7 @@ class HackSquad(commands.Cog):
 
         embed = discord.Embed(
             title=f"{name}",
-            description=f"<:github:1026874300956938300> [{github}](https://github.com/{github})\n\n**Number of PRs:** {number_of_pulls}\n**Last 3 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
+            description=f"**Github:** [{github}](https://github.com/{github})\n\n**Number of PRs:** {number_of_pulls}\n**Last 3 PRs:\n**{HackSquad(HackSquadBot).pr_formatter(pulls)}\n",
             color=discord.Color.random(),
         )
         embed.set_thumbnail(url=avatar_url)
