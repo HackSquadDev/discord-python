@@ -105,7 +105,7 @@ class Team(PartialTeam):
     "An unknown value"
 
     allow_auto_assign: bool
-    "If the team allows auto assignement of members"
+    "If the team allows auto assignment of members"
 
     disqualified: bool
     "If the team has been disqualified during the event"
@@ -135,6 +135,14 @@ class NovuContributor(TypedDict):
     bio: Optional[str]
     created_at: datetime
     pulls: List[NovuPR]
+
+
+class NovuContributorMini(TypedDict):
+    _id: str
+    github: str
+    name: Optional[str]
+    avatar_url: str
+    total_pulls: Optional[int]
 
 
 class RequesterCachedAttribute(TypedDict):
@@ -281,56 +289,57 @@ class Requester(Singleton):
         }
         return team
 
-    async def fetch_contributors(self) -> List[NovuContributor]:
-        if self._allow_cache_use("contributors"):
-            return self._cache["contributors"]["data"]
+    async def fetch_contributor(self, github: str) -> NovuContributor:
+        contrib = await self._make_request(f"https://contributors.novu.co/contributor/{github}")
+        if contrib is None:
+            raise ResponseError(404)
 
-        result = await self._make_request("https://contributors.novu.co/contributors")
+        return NovuContributor(
+            github=contrib["github"],
+            name=contrib.get("name"),
+            avatar_url=contrib["avatar_url"],
+            total_last_3_months_pulls=contrib.get("totalLast3MonthsPulls"),
+            total_pulls=contrib.get("totalPulls"),
+            bio=contrib["bio"],
+            created_at=isoparse(contrib["created_at"]),
+            pulls=[
+                NovuPR(
+                    gh_api_url=pull["url"],
+                    url=pull["html_url"],
+                    pr_number=pull["number"],
+                    state=pull["state"],
+                    locked=pull["locked"],
+                    title=pull["title"],
+                    created_at=isoparse(pull["created_at"]),
+                    updated_at=isoparse(pull["updated_at"]) if pull["updated_at"] else None,
+                    closed_at=isoparse(pull["closed_at"]) if pull["closed_at"] else None,
+                    merged_at=isoparse(pull["merged_at"]) if pull["merged_at"] else None,
+                )
+                for pull in contrib["pulls"]
+            ],
+        )
 
-        contributors = [
-            NovuContributor(
-                github=contrib["github"],
-                name=contrib["name"],
-                avatar_url=contrib["avatar_url"],
-                total_last_3_months_pulls=contrib.get("totalLast3MonthsPulls"),
-                total_pulls=contrib.get("totalPulls"),
-                bio=contrib["bio"],
-                created_at=isoparse(contrib["created_at"]),
-                pulls=[
-                    NovuPR(
-                        gh_api_url=pull["url"],
-                        url=pull["html_url"],
-                        pr_number=pull["number"],
-                        state=pull["state"],
-                        locked=pull["locked"],
-                        title=pull["title"],
-                        created_at=isoparse(pull["created_at"]),
-                        updated_at=isoparse(pull["updated_at"]) if pull["updated_at"] else None,
-                        closed_at=isoparse(pull["closed_at"]) if pull["closed_at"] else None,
-                        merged_at=isoparse(pull["merged_at"]) if pull["merged_at"] else None,
-                    )
-                    for pull in contrib["pulls"]
-                ],
-            )
-            for contrib in result["list"]
-        ]
-        self._cache["contributors"] = {
-            "cached_at": datetime.now(),
-            "data": contributors,
-            "allowed_time": timedelta(hours=12),
-        }
-
-        return contributors
-
-    async def fetch_contributors_mini(self):
+    async def fetch_contributors_mini(self) -> List[NovuContributorMini]:
         # I do not think that we would get much of a performance benefit from this but leaving it here all the same
         if self._allow_cache_use("contributors_mini"):
             return self._cache["contributors_mini"]["data"]
 
         result = await self._make_request("https://contributors.novu.co/contributors-mini")
-        self._cache["contributors"] = {
+
+        contributors = [
+            NovuContributorMini(
+                _id=contributor["_id"],
+                github=contributor["github"],
+                avatar_url=contributor["avatar_url"],
+                name=contributor.get("name"),
+                total_pulls=contributor.get("totalPulls"),
+            )
+            for contributor in result["list"]
+        ]
+
+        self._cache["contributors_mini"] = {
             "cached_at": datetime.now(),
-            "data": result["list"],
+            "data": contributors,
             "allowed_time": timedelta(hours=12),
         }
-        return result["list"]
+        return contributors
