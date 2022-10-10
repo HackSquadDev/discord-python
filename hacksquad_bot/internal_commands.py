@@ -33,9 +33,13 @@ class MyMenu(ViewMenu):
         await interaction.followup.send(embed=home_embed)
 
     @menus.button("\N{SPORTS MEDAL}")
-    async def help_lb(self, interaction): #LIGMA BALLS 
-        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
-        embed.add_field(name="__Leaderboard:__", value="`/leaderboard`\nTop teams participating in hacksquad 2022", inline=False)
+    async def help_lb(self, interaction):  # LIGMA BALLS
+        embed = discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(
+            name="__Leaderboard:__",
+            value="`/leaderboard`\nTop teams participating in hacksquad 2022",
+            inline=False,
+        )
         embed.set_author(
             name=f"{interaction.message.author}",
             icon_url=f"{interaction.message.author.avatar.url}",
@@ -44,9 +48,15 @@ class MyMenu(ViewMenu):
 
     @menus.button("\N{SUPERHERO}\N{EMOJI MODIFIER FITZPATRICK TYPE-1-2}")
     async def help_hero(self, interaction):
-        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
-        embed.add_field(name="__Hero:__", value="`/hero`\nGet information about our beloved heros ❤️", inline=False)
-        embed.add_field(name="__RandomHero:__", value="`/randomhero`\nGet a random hero", inline=False)
+        embed = discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(
+            name="__Hero:__",
+            value="`/hero`\nGet information about our beloved heros ❤️",
+            inline=False,
+        )
+        embed.add_field(
+            name="__RandomHero:__", value="`/randomhero`\nGet a random hero", inline=False
+        )
         embed.set_author(
             name=f"{interaction.message.author}",
             icon_url=f"{interaction.message.author.avatar.url}",
@@ -55,8 +65,12 @@ class MyMenu(ViewMenu):
 
     @menus.button("\N{ADULT}\N{ZERO WIDTH JOINER}\N{HANDSHAKE}\N{ZERO WIDTH JOINER}\N{ADULT}")
     async def help_teams(self, interaction):
-        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
-        embed.add_field(name="__Teams:__", value="`/team`\nGet information about the teams with their slug", inline=False)
+        embed = discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(
+            name="__Teams:__",
+            value="`/team`\nGet information about the teams with their slug",
+            inline=False,
+        )
         embed.set_author(
             name=f"{interaction.message.author}",
             icon_url=f"{interaction.message.author.avatar.url}",
@@ -67,6 +81,7 @@ class MyMenu(ViewMenu):
     async def on_stop(self, interaction):
         await interaction.message.delete()
         self.stop()
+
 
 class InternalCommands(commands.Cog):
     def __init__(self, bot: HackSquadBot) -> None:
