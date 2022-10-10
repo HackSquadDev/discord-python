@@ -161,3 +161,7 @@ cython_debug/
 
 # VSCode
 .vscode/
+
+#Remove venv and cfg files
+/hacksquad
+*.cfg

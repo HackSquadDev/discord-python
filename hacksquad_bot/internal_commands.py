@@ -1,14 +1,98 @@
+import time
 from typing import Optional
 
-from discord import Guild
-from discord.ext import commands
+import discord
+from discord import Guild, Interaction, app_commands
+from discord.ext import commands, menus
+from discord.ext.menus.views import ViewMenu
 
 from hacksquad_bot.main import Context, HackSquadBot
 
 
+class MyMenu(ViewMenu):
+    async def send_initial_message(self, interaction: Interaction, channel):
+        global home_embed
+        home_embed = discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        home_embed.set_author(
+            name=f"{interaction.message.author}",
+            icon_url=f"{interaction.message.author.avatar.url}",
+        )
+        home_embed.set_thumbnail(url="https://i.imgur.com/kDynel4.png")
+        home_embed.add_field(
+            name="🦸🏻 Hero:", value="Get information about our beloved heros ❤️", inline=False
+        )
+        home_embed.add_field(
+            name="🏅 Leaderboard:", value="Who is the best of the best?", inline=False
+        )
+        home_embed.add_field(name="🧑‍🤝‍🧑 Team:", value="Get information about teams", inline=False)
+
+        return await self.send_with_view(channel, embed=home_embed)
+
+    @menus.button("\N{HOUSE WITH GARDEN}")
+    async def on_home(self, interaction):
+        await interaction.followup.send(embed=home_embed)
+
+    @menus.button("\N{SPORTS MEDAL}")
+    async def help_lb(self, interaction): #LIGMA BALLS 
+        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(name="__Leaderboard:__", value="`/leaderboard`\nTop teams participating in hacksquad 2022", inline=False)
+        embed.set_author(
+            name=f"{interaction.message.author}",
+            icon_url=f"{interaction.message.author.avatar.url}",
+        )
+        await interaction.followup.send(embed=embed)
+
+    @menus.button("\N{SUPERHERO}\N{EMOJI MODIFIER FITZPATRICK TYPE-1-2}")
+    async def help_hero(self, interaction):
+        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(name="__Hero:__", value="`/hero`\nGet information about our beloved heros ❤️", inline=False)
+        embed.add_field(name="__RandomHero:__", value="`/randomhero`\nGet a random hero", inline=False)
+        embed.set_author(
+            name=f"{interaction.message.author}",
+            icon_url=f"{interaction.message.author.avatar.url}",
+        )
+        await interaction.followup.send(embed=embed)
+
+    @menus.button("\N{ADULT}\N{ZERO WIDTH JOINER}\N{HANDSHAKE}\N{ZERO WIDTH JOINER}\N{ADULT}")
+    async def help_teams(self, interaction):
+        embed=discord.Embed(title="Hacksquad Help Menu", color=discord.Color.random())
+        embed.add_field(name="__Teams:__", value="`/team`\nGet information about the teams with their slug", inline=False)
+        embed.set_author(
+            name=f"{interaction.message.author}",
+            icon_url=f"{interaction.message.author.avatar.url}",
+        )
+        await interaction.followup.send(embed=embed)
+
+    @menus.button("\N{BLACK SQUARE FOR STOP}\ufe0f")
+    async def on_stop(self, interaction):
+        await interaction.message.delete()
+        self.stop()
+
 class InternalCommands(commands.Cog):
     def __init__(self, bot: HackSquadBot) -> None:
         self.bot = bot
+        self.bot.remove_command("help")
+
+    @commands.command()
+    async def help(self, ctx: commands.Context) -> None:
+        """Sends the help message"""
+        await MyMenu().start(ctx)
+
+    @app_commands.command()
+    async def ping(self, interaction: Interaction) -> None:
+        """Show the ping of the bot"""
+        start = time.monotonic()
+        await interaction.response.defer()
+        end = time.monotonic()
+        overall = round((end - start) * 1000, 1)
+        ws = round(self.bot.latency * 1000, 1)
+        e = discord.Embed(
+            title="Pong! :ping_pong:",
+            description=f"Websocket latency: {ws}ms\nOverall latency: {overall}ms\nAverage latency: {round((overall+ws)/2, 1)}ms",
+            color=discord.Colour.random(),
+        )
+
+        await interaction.followup.send(embed=e)
 
     @commands.command(name="load")
     async def cmd_load_extension(self, ctx: Context, *, cog_name: str):
