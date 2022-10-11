@@ -8,14 +8,10 @@ assignees: ''
 ---
 
 ## Feature Description
+<!-- Describe the feature clearly and concisely. -->
 
-**Summary:**
-Describe the feature clearly and concisely.
-
-## Proposed Method
-
-**Summary:**
-Describe the suggested method of implementation clearly and concisely.
+## Proposed Enhancement
+<!-- Describe the suggested method of implementation clearly and concisely. -->
 
 ## Additional context
-Add any other context, benefits, or screenshots about the feature request here.
+<!-- Add any other context, benefits, or screenshots about the feature request here. -->
