@@ -141,7 +141,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "discord.py"
-version = "2.1.0a4619+g7f3e0864"
+version = "2.1.0a4620+gd0625154"
 description = "A Python wrapper for the Discord API"
 category = "main"
 optional = false
@@ -152,16 +152,16 @@ develop = false
 aiohttp = ">=3.7.4,<4"
 
 [package.extras]
-docs = ["sphinx (==4.4.0)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport", "typing-extensions (>=4.3,<5)"]
+docs = ["sphinx (==4.4.0)", "sphinxcontrib-websupport", "sphinxcontrib_trio (==1.1.2)", "typing-extensions (>=4.3,<5)"]
 speed = ["Brotli", "aiodns (>=1.1)", "cchardet (==2.1.7)", "orjson (>=3.5.4)"]
 test = ["coverage[toml]", "pytest", "pytest-asyncio", "pytest-cov", "pytest-mock", "typing-extensions (>=4.3,<5)"]
 voice = ["PyNaCl (>=1.3.0,<1.6)"]
 
 [package.source]
 type = "git"
-url = "https://github.com/ForksOfPred/discord.py"
-reference = "feat-has-app-error-handler"
-resolved_reference = "7f3e086463e6e3e8689c5662a5f16ac074cbeb70"
+url = "https://github.com/rapptz/discord.py.git"
+reference = "d062515"
+resolved_reference = "d0625154edeed584853c2a2c3871b612c127d4c4"
 
 [[package]]
 name = "distlib"
@@ -586,7 +586,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c1b27f3bef60c1bc5ab80321fc1cca881baadcf360fa0c3a5692701cbfc3944f"
+content-hash = "04ac3c9b3056506c8d510841902573d802d2c47efac5448caca259e7478fe26c"
 
 [metadata.files]
 aiohttp = [
