@@ -13,6 +13,7 @@ typing-extensions = "^4.3.0"
 tabulate = "^0.8.10"
 python-dateutil = "^2.8.2"
 rapidfuzz = "^2.11.1"
+discord-py = {git = "https://github.com/rapptz/discord.py.git", rev = "d062515"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
