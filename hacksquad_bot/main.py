@@ -46,7 +46,7 @@ class HackSquadBot(commands.AutoShardedBot):
 
         # Basically https://github.com/Rapptz/discord.py/pull/8991
         if context.cog:
-            if context.interaction and context.cog.has_app_error_handler():
+            if context.interaction and context.cog.has_app_command_error_handler():
                 return
             if not context.interaction and context.cog.has_error_handler():
                 return
