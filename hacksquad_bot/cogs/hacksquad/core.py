@@ -40,6 +40,11 @@ class HackSquad(commands.Cog):
     def __init__(self, bot: HackSquadBot) -> None:
         self.bot = bot
 
+    @app_commands.command()
+    @app_commands.describe(page="Ping the bot")
+    async def ping(self, interaction: Interaction) -> None:
+        await interaction.response.send_message("Pong!")
+
     @staticmethod
     def hero_embed_formatter(contributor: NovuContributor) -> discord.Embed:
         name = f"Hero: {contributor['name']}" or "Name not found"
