@@ -161,3 +161,7 @@ cython_debug/
 
 # VSCode
 .vscode/
+
+#venv folder
+hacksquad/
+*.cfg
