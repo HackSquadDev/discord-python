@@ -1,8 +1,11 @@
-FROM python:3
+FROM python:3.10-slim-buster
 
-WORKDIR /app/hacksquad_bot
-COPY . .
+WORKDIR /code
+COPY pyproject.toml poetry.lock /code/
 
-RUN pip install --no-cache-dir .
+RUN pip install poetry
 
-CMD ["python", "bot.py"]
+COPY . /code/
+
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi
