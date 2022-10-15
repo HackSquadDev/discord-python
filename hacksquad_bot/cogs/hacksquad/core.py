@@ -113,7 +113,7 @@ class HackSquad(commands.Cog):
         list_of_teams = [teams[x : x + 10] for x in range(0, len(teams), 10)]
 
         # sourcery skip: min-max-identity
-        if page > len(list_of_teams):
+        if page >= len(list_of_teams):
             # Last page
             page = len(list_of_teams) - 1
 
